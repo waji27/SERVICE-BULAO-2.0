@@ -60,7 +60,7 @@
 
         <!-- Navbar Start -->
         <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
-            <a href="index.html" class="navbar-brand d-flex align-items-center text-center py-0 px-4 px-lg-5">
+            <a href="index.php" class="navbar-brand d-flex align-items-center text-center py-0 px-4 px-lg-5">
                 <h1 class="m-0 text-primary">Service Bulao</h1>
             </a>
             <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse"
@@ -69,7 +69,7 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <div class="navbar-nav ms-auto p-0 p-lg-0">
-                    <a href="index.html" class="nav-item nav-link active">Home</a>
+                    <a href="index.php" class="nav-item nav-link active">Home</a>
                     <a href="#about-container" class="nav-item nav-link">About</a>
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Services</a>
@@ -93,8 +93,8 @@
                     </div> -->
                     <a href="#contact-container" class="nav-item nav-link">Contact</a>
                 </div>
-                <a href="login.html"><button type="button" class="btn btn-primary btn-sm">Login</button></a>
-                <a href="signup.html"><button type="button" class="btn btn-secondary btn-sm mx-1">SignUp</button></a>
+                <a href="login.php"><button type="button" class="btn btn-primary btn-sm">Login</button></a>
+                <a href="register.php"><button type="button" class="btn btn-secondary btn-sm mx-1">SignUp</button></a>
             </div>
         </nav>
         <!-- Navbar End -->
