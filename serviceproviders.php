@@ -1,98 +1,54 @@
 <?php
-// Include config file
-require_once "config.php";
- 
-// Define variables and initialize with empty values
-$username = $password = $confirm_password = "";
-$username_err = $password_err = $confirm_password_err = "";
- 
-// Processing form data when form is submitted
-if($_SERVER["REQUEST_METHOD"] == "POST"){
-    // Validate username
-    if(empty(trim($_POST["username"]))){
-        $username_err = "Please enter a username.";
-    } elseif(!preg_match('/^[a-zA-Z0-9_]+$/', trim($_POST["username"]))){
-        $username_err = "Username can only contain letters, numbers, and underscores.";
-    } else{
-        // Prepare a select statement
-        $sql = "SELECT id FROM users WHERE username = ?";
-        
-        if($stmt = mysqli_prepare($link, $sql)){
-            // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "s", $param_username);
-            
-            // Set parameters
-            $param_username = trim($_POST["username"]);
-            
-            // Attempt to execute the prepared statement
-            if(mysqli_stmt_execute($stmt)){
-                /* store result */
-                mysqli_stmt_store_result($stmt);
-                
-                if(mysqli_stmt_num_rows($stmt) == 1){
-                    $username_err = "This username is already taken.";
-                } else{
-                    $username = trim($_POST["username"]);
-                }
-            } else{
-                echo "Oops! Something went wrong. Please try again later.";
-            }
+// Check if the form is submitted
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Define your database connection details
+    $servername = "localhost";
+    $username = "root";
+    $password = "";
+    $dbname = "demo";
 
-            // Close statement
-            mysqli_stmt_close($stmt);
-        }
-    }
-    
-    // Validate password
-    if(empty(trim($_POST["password"]))){
-        $password_err = "Please enter a password.";     
-    } elseif(strlen(trim($_POST["password"])) < 6){
-        $password_err = "Password must have atleast 6 characters.";
-    } else{
-        $password = trim($_POST["password"]);
-    }
-    
-    // Validate confirm password
-    if(empty(trim($_POST["confirm_password"]))){
-        $confirm_password_err = "Please confirm password.";     
-    } else{
-        $confirm_password = trim($_POST["confirm_password"]);
-        if(empty($password_err) && ($password != $confirm_password)){
-            $confirm_password_err = "Password did not match.";
-        }
-    }
-    
-    // Check input errors before inserting in database
-    if(empty($username_err) && empty($password_err) && empty($confirm_password_err)){
-        
-        // Prepare an insert statement
-        $sql = "INSERT INTO users (username, password) VALUES (?, ?)";
-         
-        if($stmt = mysqli_prepare($link, $sql)){
-            // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "ss", $param_username, $param_password);
-            
-            // Set parameters
-            $param_username = $username;
-            $param_password = password_hash($password, PASSWORD_DEFAULT); // Creates a password hash
-            
-            // Attempt to execute the prepared statement
-            if(mysqli_stmt_execute($stmt)){
-                // Redirect to login page
-                header("location: login.php");
-            } else{
-                echo "Oops! Something went wrong. Please try again later.";
-            }
+    // Create a database connection
+    $conn = new mysqli($servername, $username, $password, $dbname);
 
-            // Close statement
-            mysqli_stmt_close($stmt);
+    // Check the connection
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+
+    // Retrieve form data
+    $fullName = $_POST["full_name"];
+    $email = $_POST["email"];
+    $phoneNumber = $_POST["phone_number"];
+    $gender = $_POST["gender"];
+    $streetAddress = $_POST["street_address"];
+    $occupation = $_POST["occupation"];
+    $experience = $_POST["experience"];
+    $availableFrom = $_POST["available_from"];
+    $availableTo = $_POST["available_to"];
+
+    // Perform data validation (you can add more specific validations)
+    if (empty($fullName) || empty($email) || empty($phoneNumber) || empty($streetAddress)) {
+        echo "Please fill in all required fields.";
+    } else {
+        // Insert data into the database
+        $sql = "INSERT INTO service_providers (full_name, email, phone_number, gender, street_address, occupation, experience, available_from, available_to)
+                VALUES ('$fullName', '$email', '$phoneNumber', '$gender', '$streetAddress', '$occupation', '$experience', '$availableFrom', '$availableTo')";
+
+        if ($conn->query($sql) === TRUE) {
+            echo "Service provider data added successfully!";
+        } else {
+            echo "Error: " . $sql . "<br>" . $conn->error;
         }
     }
-    
-    // Close connection
-    mysqli_close($link);
+
+    // Close the database connection
+    $conn->close();
+} else {
+    // If the form is not submitted, redirect or display the form
+    // You can add code here to display the form HTML if needed
 }
 ?>
+
 
 
 
@@ -101,7 +57,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
 <head>
     <meta charset="utf-8">
-    <title>SignUp in Service Bulao</title>
+    <title>POST A SERVICE</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
@@ -132,13 +88,19 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
     <!-- Template Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
+    <link href="css/providers.css" rel="stylesheet">
 
     <style>
-        body{ font: 14px sans-serif; }
-        .wrapper{ width: 360px; padding: 20px; margin:auto;}
-        nav{ height: 10vh;}
-    </style>
+    .wrapper {
+        width: 360px;
+        padding: 20px;
+        margin: auto;
+    }
 
+    nav {
+        height: 10vh;
+    }
+    </style>
 </head>
 
 <body>
@@ -169,7 +131,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             </button>
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <div class="navbar-nav ms-auto p-0 p-lg-0">
-                    <a href="index.php" class="nav-item nav-link active">Home</a>
+                    <a href="./pages/index.php" class="nav-item nav-link active">Home</a>
                     <a href="#about-container" class="nav-item nav-link">About</a>
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Services</a>
@@ -200,36 +162,78 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         <!-- Navbar End -->
 
 
-        <!-- SignUp Form Start -->
-        <div class="wrapper">
-        <h2>Sign Up</h2>
-        <p>Please fill this form to create an account.</p>
-        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
-            <div class="form-group">
-                <label>Username</label>
-                <input type="text" name="username" class="form-control mb-3 <?php echo (!empty($username_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $username; ?>">
-                <span class="invalid-feedback"><?php echo $username_err; ?></span>
-            </div>    
-            <div class="form-group">
-                <label>Password</label>
-                <input type="password" name="password" class="form-control mb-3 <?php echo (!empty($password_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $password; ?>">
-                <span class="invalid-feedback"><?php echo $password_err; ?></span>
-            </div>
-            <div class="form-group">
-                <label>Confirm Password</label>
-                <input type="password" name="confirm_password" class="form-control mb-3 <?php echo (!empty($confirm_password_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $confirm_password; ?>">
-                <span class="invalid-feedback"><?php echo $confirm_password_err; ?></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" class="btn btn-primary my-3" value="Submit">
-                <input type="reset" class="btn btn-secondary ml-2 my-3" value="Reset">
-            </div>
-            <p>Already have an account? <a href="login.php">Login here</a>.</p>
-        </form>
-    </div>
-        <!-- SignUp Form End -->
-
-
+        <div class="container-of-providers">
+            <header>Add Your Information</header>
+            <form class="form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+                <div class="input-box">
+                    <label>Full Name</label>
+                    <input type="text" placeholder="Enter full name" id="full_name" name="full_name" required />
+                </div>
+                <div class="input-box">
+                    <label>Email Address</label>
+                    <input type="text" placeholder="Enter email address" id="email" name="email" required />
+                </div>
+                <div class="column">
+                    <div class="input-box">
+                        <label>Phone Number</label>
+                        <input type="number" placeholder="Enter phone number" id="phone_number" name="phone_number" required />
+                    </div>
+                </div>
+                <div class="gender-box">
+                    <h3>Gender</h3>
+                    <div class="gender-option">
+                        <div class="gender">
+                            <input type="radio" id="check-male" name="gender" checked />
+                            <label for="check-male">male</label>
+                        </div>
+                        <div class="gender">
+                            <input type="radio" id="check-female" name="gender" />
+                            <label for="check-female">Female</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="input-box address">
+                    <label>Address</label>
+                    <input type="text" placeholder="Enter street address" id="street_address" name="street_address" required />
+                    <div class="column">
+                        <div class="select-box">
+                            <select name="occupation">
+                                <option hidden>Occupation</option>
+                                <option>Electrician</option>
+                                <option>Plumber</option>
+                                <option>Carpenter</option>
+                                <option>Welder</option>
+                                <option>Labourer</option>
+                                <option>Rickshaw</option>
+                                <option>Loader Rickshaw</option>
+                            </select>
+                        </div>
+                        <div class="select-box">
+                            <select name="experience">
+                                <option hidden>Work Experience</option>
+                                <option>1-2 years</option>
+                                <option>3-5 years</option>
+                                <option>5-10 years</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="gender-box">
+                        <h3>Available</h3>
+                        <div class="gender-option">
+                            <div class="gender">
+                                <label for="check-male">From :</label>
+                                <input type="time" id="check-male" name="available_from" checked />
+                            </div>
+                            <div class="gender">
+                                <label for="check-female">To :</label>
+                                <input type="time" id="check-female" name="available_to" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button>Add My Service</button>
+            </form>
+        </div>
 
         <!-- Footer Start -->
         <div class="container-fluid bg-dark text-white-50 footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">

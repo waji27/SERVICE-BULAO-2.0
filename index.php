@@ -69,7 +69,7 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <div class="navbar-nav ms-auto p-0 p-lg-0">
-                    <a href="index.php" class="nav-item nav-link active">Home</a>
+                    <a href="./pages/index.php" class="nav-item nav-link active">Home</a>
                     <a href="#about-container" class="nav-item nav-link">About</a>
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Services</a>
@@ -115,7 +115,7 @@
                                     <h1 class="display-3 text-white animated slideInDown mb-4">Offer A Service</h1>
                                     <p class="fs-5 fw-medium text-white mb-4 pb-2">No need to go outside and search for
                                         service like plumber, welder, electrician etc, just get to this website.</p>
-                                    <a href="" class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">Post a
+                                    <a href="serviceproviders.php" class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">Post a
                                         Service</a>
                                     <a href="#categories-of-services"
                                         class="btn btn-secondary py-md-3 px-md-5 animated slideInRight">Find A
@@ -136,7 +136,7 @@
                                     <p class="fs-5 fw-medium text-white mb-4 pb-2">Vero elitr justo clita lorem. Ipsum
                                         dolor at sed stet sit diam no. Kasd rebum ipsum et diam justo clita et kasd
                                         rebum sea elitr.</p>
-                                    <a href="" class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">Post a
+                                    <a href="serviceproviders.php" class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">Post a
                                         Service</a>
                                     <a href="#categories-of-services"
                                         class="btn btn-secondary py-md-3 px-md-5 animated slideInRight">Find a
