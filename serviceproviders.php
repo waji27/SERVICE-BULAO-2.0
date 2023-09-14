@@ -1,53 +1,59 @@
 <?php
-// Check if the form is submitted
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Define your database connection details
-    $servername = "localhost";
-    $username = "root";
-    $password = "";
-    $dbname = "demo";
+// Database configuration (replace with your actual database credentials)
+$hostname = 'localhost';
+$username = 'root';
+$password = '';
+$database_name = 'demo';
 
-    // Create a database connection
-    $conn = new mysqli($servername, $username, $password, $dbname);
+// Create a database connection
+$db = new mysqli($hostname, $username, $password, $database_name);
 
-    // Check the connection
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
+// Check for database connection errors
+if ($db->connect_error) {
+    die("Connection failed: " . $db->connect_error);
+}
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Retrieve form data
-    $fullName = $_POST["full_name"];
-    $email = $_POST["email"];
-    $phoneNumber = $_POST["phone_number"];
-    $gender = $_POST["gender"];
-    $streetAddress = $_POST["street_address"];
-    $occupation = $_POST["occupation"];
-    $experience = $_POST["experience"];
-    $availableFrom = $_POST["available_from"];
-    $availableTo = $_POST["available_to"];
+    $full_name = $_POST['full_name'];
+    $email = $_POST['email'];
+    $phone_number = $_POST['phone_number'];
+    $gender = $_POST['gender'];
+    $street_address = $_POST['street_address'];
+    $occupation = $_POST['occupation'];
+    $experience = $_POST['experience'];
+    $available_from = $_POST['available_from'];
+    $available_to = $_POST['available_to'];
 
-    // Perform data validation (you can add more specific validations)
-    if (empty($fullName) || empty($email) || empty($phoneNumber) || empty($streetAddress)) {
-        echo "Please fill in all required fields.";
+    // Perform validation and sanitization if needed
+
+    // Insert data into the database
+    $sql = "INSERT INTO service_providers (full_name, email, phone_number, gender, street_address, occupation, experience, available_from, available_to) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $stmt = $db->prepare($sql);
+    $stmt->bind_param("sssssssss", $full_name, $email, $phone_number, $gender, $street_address, $occupation, $experience, $available_from, $available_to);
+
+    if ($stmt->execute()) {
+        // Data inserted successfully, now construct the card HTML
+        $cardHtml = '<div class="card">';
+        $cardHtml .= '<p>Name: ' . $full_name . '</p>';
+        $cardHtml .= '<p>Email: ' . $email . '</p>';
+        // Add other data to the card as needed
+        $cardHtml .= '</div>';
+
+        // Append the card HTML to a file named providers.php
+        $providersFile = 'providers.php';
+        file_put_contents($providersFile, $cardHtml, FILE_APPEND);
+
+        // Redirect back to addproviders.php or display a success message
+        header("Location: providers.php");
+        exit();
     } else {
-        // Insert data into the database
-        $sql = "INSERT INTO service_providers (full_name, email, phone_number, gender, street_address, occupation, experience, available_from, available_to)
-                VALUES ('$fullName', '$email', '$phoneNumber', '$gender', '$streetAddress', '$occupation', '$experience', '$availableFrom', '$availableTo')";
-
-        if ($conn->query($sql) === TRUE) {
-            echo "Service provider data added successfully!";
-        } else {
-            echo "Error: " . $sql . "<br>" . $conn->error;
-        }
+        // Handle database insertion error
+        echo "Error: " . $stmt->error;
     }
-
-    // Close the database connection
-    $conn->close();
-} else {
-    // If the form is not submitted, redirect or display the form
-    // You can add code here to display the form HTML if needed
 }
 ?>
+
 
 
 
@@ -176,7 +182,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div class="column">
                     <div class="input-box">
                         <label>Phone Number</label>
-                        <input type="number" placeholder="Enter phone number" id="phone_number" name="phone_number" required />
+                        <input type="number" placeholder="Enter phone number" id="phone_number" name="phone_number"
+                            required />
                     </div>
                 </div>
                 <div class="gender-box">
@@ -194,7 +201,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
                 <div class="input-box address">
                     <label>Address</label>
-                    <input type="text" placeholder="Enter street address" id="street_address" name="street_address" required />
+                    <input type="text" placeholder="Enter street address" id="street_address" name="street_address"
+                        required />
                     <div class="column">
                         <div class="select-box">
                             <select name="occupation">
@@ -314,9 +322,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <script src="lib/easing/easing.min.js"></script>
     <script src="lib/waypoints/waypoints.min.js"></script>
     <script src="lib/owlcarousel/owl.carousel.min.js"></script>
-
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
-</body>
 
+</body>
 </html>
