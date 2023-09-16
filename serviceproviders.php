@@ -1,5 +1,5 @@
 <?php
-// Database configuration (replace with your actual database credentials)
+// Database configuration
 $hostname = 'localhost';
 $username = 'root';
 $password = '';
@@ -13,7 +13,8 @@ if ($db->connect_error) {
     die("Connection failed: " . $db->connect_error);
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') 
+    {
     // Retrieve form data
     $full_name = $_POST['full_name'];
     $email = $_POST['email'];
@@ -29,6 +30,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Insert data into the database
     $sql = "INSERT INTO service_providers (full_name, email, phone_number, gender, street_address, occupation, experience, available_from, available_to) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    }
+    
+    
     $stmt = $db->prepare($sql);
     $stmt->bind_param("sssssssss", $full_name, $email, $phone_number, $gender, $street_address, $occupation, $experience, $available_from, $available_to);
 
@@ -51,7 +55,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Handle database insertion error
         echo "Error: " . $stmt->error;
     }
-}
 ?>
 
 
@@ -94,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <!-- Template Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
-    <link href="css/providers.css" rel="stylesheet">
+    <link href="css/service-providers.css" rel="stylesheet">
 
     <style>
     .wrapper {
@@ -122,8 +125,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </div>
         <!-- Spinner End -->
-
-
 
 
         <!-- Navbar Start -->
@@ -326,4 +327,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script src="js/main.js"></script>
 
 </body>
+
 </html>
